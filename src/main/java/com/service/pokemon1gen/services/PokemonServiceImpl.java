@@ -29,10 +29,8 @@ public class PokemonServiceImpl implements PokemonService{
     }
 
     @Override
-    public Optional<Pokemon> getOnePokemon(Long id) {
-        Optional optPokemon = Optional.ofNullable(pokemonRepository.findById(id));
-        
-        return optPokemon.or(new MissignoSupplier());
+    public Pokemon getOnePokemon(Long id) {
+        return pokemonRepository.findById(id).orElseGet(new MissignoSupplier());
     }
 
     @Override
