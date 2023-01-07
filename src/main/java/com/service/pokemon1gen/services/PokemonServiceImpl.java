@@ -9,7 +9,6 @@ import com.service.pokemon1gen.repositories.PokemonRepository;
 import com.service.pokemon1gen.suppliers.MissignoSupplier;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,17 +38,17 @@ public class PokemonServiceImpl implements PokemonService{
     }
 
     @Override
-    public Optional<Pokemon> deletePokemon(Long id) {
-        Optional optPokemon = Optional.ofNullable(pokemonRepository.findById(id));
+    public Pokemon deletePokemon(Long id) {
+        Optional<Pokemon> optPokemon = pokemonRepository.findById(id);
         
         if(optPokemon.isPresent()) {
-            Pokemon pokemonToDelete = (Pokemon) optPokemon.get();
+            Pokemon pokemonToDelete = optPokemon.get();
             pokemonRepository.deleteById(pokemonToDelete.getId());
             
-            return Optional.of(pokemonToDelete);
+            return pokemonToDelete;
         }
         
-        return optPokemon.or(new MissignoSupplier());
+        return optPokemon.orElseGet(new MissignoSupplier());
     }
     
 }
