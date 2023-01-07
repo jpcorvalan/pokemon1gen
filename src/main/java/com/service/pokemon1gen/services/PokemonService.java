@@ -14,7 +14,7 @@ import java.util.Optional;
  */
 public interface PokemonService {
     public List<Pokemon> getAllPokemon();
-    public Optional<Pokemon> getOnePokemon(Long id);
+    public Pokemon getOnePokemon(Long id);
     public Pokemon savePokemon(Pokemon pokemon);
     public Optional<Pokemon> deletePokemon(Long id);
 }
