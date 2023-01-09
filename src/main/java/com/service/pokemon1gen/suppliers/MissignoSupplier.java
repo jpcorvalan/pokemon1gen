@@ -14,9 +14,8 @@ import java.util.function.Supplier;
 public class MissignoSupplier implements Supplier<Pokemon> {
 
     @Override
-    public Pokemon get() {
-        String typesArr[] = {"No type", "No Type"};
-        Pokemon missigno = new Pokemon(Long.MIN_VALUE, "Missigno", Double.NaN, typesArr, "The ID of Pokémon you inserted doesn't exists in the supplier apart");
+    public Pokemon get() {        
+        Pokemon missigno = new Pokemon(Long.MIN_VALUE, "Missigno", Double.NaN, null, "The ID of Pokémon you inserted doesn't exists");
                 
         return missigno;
     }
