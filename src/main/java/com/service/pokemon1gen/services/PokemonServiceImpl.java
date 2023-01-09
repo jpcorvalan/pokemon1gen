@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
  * @author juan9
  */
 @Service
-public class PokemonServiceImpl implements PokemonService{
+public class PokemonServiceImpl implements IPokemonService{
     
     @Autowired
     private PokemonRepository pokemonRepository;

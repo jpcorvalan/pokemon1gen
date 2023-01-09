@@ -4,11 +4,15 @@
  */
 package com.service.pokemon1gen.models;
 
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,22 +32,26 @@ public class Pokemon {
     @Column(unique = true, nullable = false)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String name;
 
     @Column(nullable = false)
     private Double weight;
 
     @Column(nullable = false)
-    private String[] types;
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.MERGE
+    )
+    private List<Type> types;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "VARCHAR", nullable = false)
     private String pokedexShortDescription;
 
     public Pokemon() {
     }
 
-    public Pokemon(Long id, String name, Double weight, String[] types, String pokedexShortDescription) {
+    public Pokemon(Long id, String name, Double weight, List<Type> types, String pokedexShortDescription) {
         this.id = id;
         this.name = name;
         this.weight = weight;
