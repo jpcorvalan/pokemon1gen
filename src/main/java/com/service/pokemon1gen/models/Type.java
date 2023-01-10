@@ -5,6 +5,7 @@
 package com.service.pokemon1gen.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.service.pokemon1gen.helperClasses.TypeDataValidator;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +14,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,6 +34,8 @@ public class Type {
     @Column(unique = true, nullable = false)
     private Integer id;
 
+    @NotEmpty(message = TypeDataValidator.NAME)
+    @Pattern(regexp = "[A-Z][a-z]*", message = TypeDataValidator.REGEXP_NAME)
     @Column(unique = true, nullable = false)
     private String name;
 
