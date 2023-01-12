@@ -6,6 +6,7 @@ package com.service.pokemon1gen.repositories;
 
 import org.springframework.stereotype.Repository;
 import com.service.pokemon1gen.models.Type;
+import java.util.Optional;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**
@@ -13,6 +14,8 @@ import org.springframework.data.repository.PagingAndSortingRepository;
  * @author juan9
  */
 @Repository
-public interface TypeRepository extends PagingAndSortingRepository<Type, Integer>{
-    
+public interface TypeRepository extends PagingAndSortingRepository<Type, Integer> {
+
+    public abstract Optional<Type> findByName(String name);
+
 }
