@@ -14,6 +14,9 @@ import java.util.List;
 public interface IPokemonService {
     public List<Pokemon> getAllPokemon();
     public Pokemon getOnePokemon(Long id);
+    public List<Pokemon> findPokemonByName(String name);
     public Pokemon savePokemon(Pokemon pokemon);
     public Pokemon deletePokemon(Long id);
+    public Pokemon getPokemonAndSaveIfNotExists(long id);
+    public void deleteAllPokemon();
 }

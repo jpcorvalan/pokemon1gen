@@ -5,7 +5,7 @@
 package com.service.pokemon1gen.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.service.pokemon1gen.helperClasses.TypeDataValidator;
+import com.service.pokemon1gen.helperClasses.validators.TypeDataValidator;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
