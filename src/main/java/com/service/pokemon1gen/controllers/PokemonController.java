@@ -24,6 +24,10 @@ import org.postgresql.util.PSQLException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestParam;
+import com.service.pokemon1gen.suppliers.MissignoSupplier;
+import java.util.ArrayList;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 /**
  *
@@ -41,18 +45,71 @@ public class PokemonController {
         return pokemonService.getAllPokemon();
     }
 
+    @GetMapping
+    public List<Pokemon> findPokemonByName(@RequestParam(required = false) String name) {
+        if (name.isBlank() || name == null) {
+            return this.listPokemon();
+        }
+
+        return pokemonService.findPokemonByName(name);
+    }
+
+    @GetMapping(path = "/getAndSave/{pokemonId}")
+    public ResponseEntity<Pokemon> getPokemonAndSave(@PathVariable("pokemonId") long id) {
+        return new ResponseEntity<>(pokemonService.getPokemonAndSaveIfNotExists(id), HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/fillDatabaseWith/{quantity}")
+    public ResponseEntity<?> fillDatabase(@PathVariable("quantity") int quantity) {
+
+        if (quantity > 1 && quantity < 151) {
+
+            List<Pokemon> pokemonAdded = new ArrayList<>();
+
+            for (int i = 1; i < 15; i++) {
+                pokemonAdded.add(getPokemonAndSave(i).getBody());
+            }
+
+            return new ResponseEntity<>(pokemonAdded, HttpStatus.OK);
+        }
+
+        Map<String, String> badNumberError = new HashMap<>();
+
+        badNumberError.put("error", "Insert a number between 1 and 150 inclusive");
+
+        return new ResponseEntity<>(badNumberError, HttpStatus.BAD_REQUEST);
+
+    }
+
     @GetMapping(path = "/{pokemonId}")
     public ResponseEntity<Pokemon> getOnePokemon(@PathVariable("pokemonId") long id) {
-        return new ResponseEntity<>(pokemonService.getOnePokemon(id), HttpStatus.OK);
+        return new ResponseEntity<>(pokemonService.getPokemonAndSaveIfNotExists(id), HttpStatus.OK);
     }
 
     @PostMapping("/save")
     public ResponseEntity<Pokemon> savePokemon(@Valid @RequestBody Pokemon pokemon) {
         return new ResponseEntity<>(this.pokemonService.savePokemon(pokemon), HttpStatus.CREATED);
     }
-    
-    /* Exceptions Handlers */
 
+    @PostMapping("/saveMany")
+    public ResponseEntity<List<Pokemon>> saveManyPokemon(@RequestBody List<Pokemon> manyPokemon) {
+        manyPokemon.forEach((pokemon) -> {
+            this.savePokemon(pokemon);
+        });
+
+        return new ResponseEntity<>(manyPokemon, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/deleteAll")
+    public ResponseEntity<?> deleteAllPokemon() {
+        this.pokemonService.deleteAllPokemon();
+        Map<String, String> response = new HashMap<>();
+
+        response.put("info", "All pokémon succesfully deleted");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    /* Exceptions Handlers */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map> handleArgumentNotValid(MethodArgumentNotValidException exception) {
         HashMap<String, String> mappedErrors = new HashMap<>();
