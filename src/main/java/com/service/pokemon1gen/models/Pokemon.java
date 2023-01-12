@@ -4,7 +4,7 @@
  */
 package com.service.pokemon1gen.models;
 
-import com.service.pokemon1gen.helperClasses.PokemonDataValidator;
+import com.service.pokemon1gen.helperClasses.validators.PokemonDataValidator;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -44,11 +44,11 @@ public class Pokemon {
     @Column(nullable = false)
     private Double weight;
 
-    @NotEmpty(message = PokemonDataValidator.TYPES)
-    @Column(nullable = false)
+//    @NotEmpty(message = PokemonDataValidator.TYPES)
+    @Column(nullable = true)
     @ManyToMany(
             fetch = FetchType.LAZY,
-            cascade = CascadeType.MERGE
+            cascade = CascadeType.ALL
     )
     private List<Type> types;
 
