@@ -12,9 +12,9 @@ import com.service.pokemon1gen.models.Type;
 import com.service.pokemon1gen.repositories.PokemonRepository;
 import com.service.pokemon1gen.repositories.TypeRepository;
 import com.service.pokemon1gen.suppliers.MissignoSupplier;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -50,6 +50,24 @@ public class PokemonServiceImpl implements IPokemonService {
     }
 
     @Override
+    public Pokemon savePokemon(Pokemon pokemon) {
+
+        List<Type> types = pokemon.getTypes().stream().map((item) -> {
+            Optional<Type> optType = this.typeRepository.findByName(StringHelper.upperFirstLetter(item.getName()));
+
+            if (optType.isPresent()) {
+                return optType.get();
+            }
+
+            return null;
+        }).collect(Collectors.toList());
+
+        pokemon.setTypes(types);
+
+        return pokemonRepository.save(pokemon);
+    }
+
+    @Override
     public Pokemon getPokemonAndSaveIfNotExists(long id) {
         Optional<Pokemon> pkmnFinded = this.pokemonRepository.findById(id);
 
@@ -69,24 +87,13 @@ public class PokemonServiceImpl implements IPokemonService {
 
         String pokedexDescription = pokemonData1.getFlavorTextEntries().get(0).getFlavorText();
 
-        List<Type> types = new ArrayList<>();
-
-        String typeNameUpper = StringHelper.upperFirstLetter(pokemonData2.getTypes().get(0).getType().getName());
-
-        Optional<Type> findedType = typeRepository.findByName(typeNameUpper);
-
-        if (findedType.isPresent()) {
-            types.add(findedType.get());
-        }
+        List<Type> types = pokemonData2.getTypes().stream().map((item) -> {
+            return new Type(item.getType().getName());
+        }).collect(Collectors.toList());
 
         Pokemon pokemonToSave = new Pokemon(id, StringHelper.upperFirstLetter(pokemonData1.getName()), pokemonData2.getWeight().doubleValue(), types, pokedexDescription);
 
-        return pokemonRepository.save(pokemonToSave);
-    }
-
-    @Override
-    public Pokemon savePokemon(Pokemon pokemon) {
-        return pokemonRepository.save(pokemon);
+        return this.savePokemon(pokemonToSave);
     }
 
     @Override
@@ -102,11 +109,9 @@ public class PokemonServiceImpl implements IPokemonService {
 
         return optPokemon.orElseGet(new MissignoSupplier());
     }
-    
-    
 
     @Override
-    public List<Pokemon> findPokemonByName(String name) {
+    public Optional<Pokemon> findPokemonByName(String name) {
         return pokemonRepository.findByName(name);
     }
 
