@@ -25,7 +25,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.service.pokemon1gen.suppliers.MissignoSupplier;
 import java.util.ArrayList;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
@@ -46,12 +45,12 @@ public class PokemonController {
     }
 
     @GetMapping
-    public List<Pokemon> findPokemonByName(@RequestParam(required = false) String name) {
+    public ResponseEntity<?> findPokemonByName(@RequestParam(required = false) String name) {
         if (name.isBlank() || name == null) {
-            return this.listPokemon();
+            return new ResponseEntity<>("The pokémon specified doesn't exists", HttpStatus.NOT_FOUND);
         }
 
-        return pokemonService.findPokemonByName(name);
+        return new ResponseEntity<>(pokemonService.findPokemonByName(name).orElse(null), HttpStatus.OK);
     }
 
     @GetMapping(path = "/getAndSave/{pokemonId}")
@@ -62,11 +61,11 @@ public class PokemonController {
     @PostMapping(path = "/fillDatabaseWith/{quantity}")
     public ResponseEntity<?> fillDatabase(@PathVariable("quantity") int quantity) {
 
-        if (quantity > 1 && quantity < 151) {
+        if (quantity > 1 && quantity <= 151) {
 
             List<Pokemon> pokemonAdded = new ArrayList<>();
 
-            for (int i = 1; i < 15; i++) {
+            for (int i = 1; i <= quantity; i++) {
                 pokemonAdded.add(getPokemonAndSave(i).getBody());
             }
 
@@ -98,6 +97,11 @@ public class PokemonController {
         });
 
         return new ResponseEntity<>(manyPokemon, HttpStatus.CREATED);
+    }
+    
+    @DeleteMapping("/delete/{pokemonId}")
+    public ResponseEntity<Pokemon> deleteOnePokemonById(@PathVariable("pokemonId") long id) {
+        return new ResponseEntity<>(this.pokemonService.deletePokemon(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteAll")
