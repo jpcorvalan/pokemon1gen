@@ -15,7 +15,7 @@ public class MissignoSupplier implements Supplier<Pokemon> {
 
     @Override
     public Pokemon get() {        
-        Pokemon missigno = new Pokemon(Long.MIN_VALUE, "Missigno", Double.NaN, null, "The ID of Pokémon you inserted doesn't exists");
+        Pokemon missigno = new Pokemon(Long.MIN_VALUE, "MissingNo", Double.NaN, null, "The ID of Pokémon you inserted doesn't exists");
                 
         return missigno;
     }
