@@ -6,10 +6,13 @@ package com.service.pokemon1gen.services;
 
 import com.service.pokemon1gen.models.Type;
 import com.service.pokemon1gen.repositories.TypeRepository;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 /**
@@ -24,7 +27,13 @@ public class TypeServiceImpl implements ITypeService{
 
     @Override
     public List<Type> getAllTypes() {
-        return (List<Type>) this.typeRepository.findAll();
+        Sort typeSort = Sort.by("id");
+        
+        List<Type> orderedById = (List<Type>) this.typeRepository.findAll(typeSort);
+        
+//        orderedById.sort(Comparator.comparingInt(Type::getId));
+        
+        return orderedById;
     }
 
     @Override
