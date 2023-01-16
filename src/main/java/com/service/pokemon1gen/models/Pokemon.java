@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,11 +45,11 @@ public class Pokemon {
     @Column(nullable = false)
     private Double weight;
 
-//    @NotEmpty(message = PokemonDataValidator.TYPES)
-    @Column(nullable = true)
+//    @NotNull(message = PokemonDataValidator.TYPES)
+    @Column(nullable = false)
     @ManyToMany(
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.MERGE
     )
     private List<Type> types;
 
