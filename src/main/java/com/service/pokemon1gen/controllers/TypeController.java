@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -74,7 +75,7 @@ public class TypeController {
             try {
                 this.saveType(item);
             } catch (Exception e) {
-                errors.add(e.getMessage());
+                errors.add(e.getCause().getLocalizedMessage());
                 continue;
             }
             addedTypes.add(item);
@@ -84,6 +85,11 @@ public class TypeController {
         typesAndErrors.put("errors", errors);
 
         return new ResponseEntity<>(typesAndErrors, HttpStatus.CREATED);
+    }
+    
+    @DeleteMapping("/delete/{typeId}")
+    public ResponseEntity<Type> deleteType(@PathVariable("typeId") int id) {
+        return new ResponseEntity<>(this.typeService.deleteType(id), HttpStatus.OK);
     }
     
 
@@ -104,8 +110,8 @@ public class TypeController {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Map> handleSaveDuplicatedException(DataIntegrityViolationException exception) {
         HashMap<String, String> mappedErrors = new HashMap<>();
-
-        mappedErrors.put("error", "This type already exists!");
+        
+        mappedErrors.put("error", exception.getRootCause().getMessage());
 
         return new ResponseEntity<>(mappedErrors, HttpStatus.BAD_REQUEST);
     }
