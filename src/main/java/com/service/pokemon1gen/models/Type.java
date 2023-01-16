@@ -7,8 +7,10 @@ package com.service.pokemon1gen.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.service.pokemon1gen.helperClasses.validators.TypeDataValidator;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,11 +41,17 @@ public class Type {
     @Column(unique = true, nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "types")
+    @ManyToMany(
+            mappedBy = "types"
+    )
     @JsonIgnore
     private List<Pokemon> pokemon;
 
     public Type() {
+    }
+    
+    public Type(String name) {
+        this.name = name;
     }
 
     public Type(Integer id, String name, List<Pokemon> pokemon) {
