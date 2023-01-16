@@ -6,6 +6,7 @@ package com.service.pokemon1gen.repositories;
 
 import com.service.pokemon1gen.models.Pokemon;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,5 +16,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PokemonRepository extends PagingAndSortingRepository<Pokemon, Long> {
-    public abstract List<Pokemon> findByName(String name);
+
+    public abstract Optional<Pokemon> findByName(String name);
+    
 }
